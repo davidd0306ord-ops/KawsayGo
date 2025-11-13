@@ -3,156 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tu Progreso - KawsayGo</title>
+    <title>KawsayGo - Tu Progreso</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #004d40, #00695c);
-            margin: 0;
-            padding: 0;
-            color: white;
+            background: #f2f7ff;
             text-align: center;
+            padding: 40px;
         }
 
-        .container {
-            margin-top: 40px;
-            padding: 20px;
+        .card {
+            max-width: 450px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
 
-        h1 {
-            font-size: 2.4em;
-            margin-bottom: 10px;
+        .progress-container {
+            width: 100%;
+            background: #e1e1e1;
+            border-radius: 20px;
+            margin-top: 20px;
+            height: 25px;
+            overflow: hidden;
         }
 
-        .contador {
-            font-size: 4.5em;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        button {
-            padding: 15px 20px;
-            margin: 10px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: bold;
-        }
-
-        .reiniciar {
-            background: #ff5252;
-            color: white;
-        }
-
-        .reiniciar:hover {
-            background: #ff867c;
-        }
-
-        .sumar {
-            background: #a5d6a7;
-            color: #004d40;
-        }
-
-        .sumar:hover {
-            background: #c8e6c9;
+        .progress-bar {
+            height: 25px;
+            width: 0;
+            background: #00b36b;
+            transition: width 1.5s ease;
         }
 
         .mensaje {
-            background: rgba(255,255,255,0.15);
-            padding: 20px;
             margin-top: 25px;
-            border-radius: 12px;
-            font-size: 1.2em;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
         }
 
-        .diagnostico-info {
-            margin-top: 15px;
-            font-size: 0.9em;
-            opacity: 0.8;
+        .boton {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: #00b36b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Tu Progreso</h1>
+    <div class="card">
+        <h2>Calculando tu progreso...</h2>
 
-    <div class="contador" id="dias">0</div>
-    <p>Días sin recaer</p>
+        <div class="progress-container">
+            <div class="progress-bar" id="barra"></div>
+        </div>
 
-    <button class="sumar" onclick="sumarDia()">✔ Marcar día completado</button>
-    <button class="reiniciar" onclick="reiniciar()">🔄 Recaí… reiniciar contador</button>
+        <p class="mensaje" id="mensaje">Analizando tu energía y enfoque...</p>
 
-    <div class="mensaje" id="mensajeMotivacional">
-        Cargando tu energía...
+        <a href="inicio.html" class="boton">Continuar</a>
     </div>
 
-    <div class="diagnostico-info" id="infoDiag"></div>
-</div>
+    <script>
+        // Por ahora es un avance fijo. Luego lo conectaremos con el diagnóstico.
+        let progreso = 72; // Cambiará según las respuestas del usuario
 
+        document.getElementById("barra").style.width = progreso + "%";
 
-<script>
-// Cargar contador
-function cargarDias() {
-    let dias = localStorage.getItem("contadorKawsayGo");
-    if (!dias) dias = 0;
-    document.getElementById("dias").textContent = dias;
-}
-cargarDias();
+        // Mensaje según valor
+        let mensaje = "";
+        if (progreso < 40) mensaje = "Necesitas un reinicio urgente. 💛";
+        else if (progreso < 70) mensaje = "Tienes buena base, sigamos mejorando. ⚡";
+        else mensaje = "Estás muy cerca de tu mejor versión. 🔥";
 
-// Sumar día
-function sumarDia() {
-    let dias = parseInt(localStorage.getItem("contadorKawsayGo") || 0);
-    dias++;
-    localStorage.setItem("contadorKawsayGo", dias);
-    cargarDias();
-    actualizarMensaje();
-}
-
-// Reiniciar
-function reiniciar() {
-    if (confirm("¿Seguro que quieres reiniciar tu contador?")) {
-        localStorage.setItem("contadorKawsayGo", 0);
-        cargarDias();
-        actualizarMensaje();
-    }
-}
-
-// Mensajes motivacionales
-function actualizarMensaje() {
-
-    const dias = parseInt(localStorage.getItem("contadorKawsayGo") || 0);
-
-    let mensajes = [
-        "Cada día eres más fuerte. Mantente firme.",
-        "Tu energía regresa a ti. Sigue avanzando.",
-        "No se trata de ser perfecto, sino constante.",
-        "Hoy ganaste. Mañana también puedes hacerlo.",
-        "La disciplina es el puente entre tus sueños y tu realidad."
-    ];
-
-    let mensajeFinal = mensajes[Math.floor(Math.random() * mensajes.length)];
-
-    // Personalización según diagnóstico
-    const diag = JSON.parse(localStorage.getItem("diagnosticoKawsayGo") || "{}");
-
-    if (diag.causa === "estres") mensajeFinal += " — Recuerda: respira, el estrés no te controla.";
-    if (diag.causa === "soledad") mensajeFinal += " — No estás solo, esto es un proceso contigo mismo.";
-    if (diag.causa === "contenido") mensajeFinal += " — Evita los estímulos visuales que activan tus impulsos.";
-    if (diag.hora === "noche") mensajeFinal += " — Cuida tus noches, son tu punto vulnerable.";
-
-    document.getElementById("mensajeMotivacional").textContent = mensajeFinal;
-
-    // Mostrar diagnóstico resumido
-    document.getElementById("infoDiag").textContent =
-        `Tus recaídas suelen ser: ${diag.frecuencia || 'N/A'} | Impulso: ${diag.impulso || 'N/A'} | Hora crítica: ${diag.hora || 'N/A'}`;
-}
-
-actualizarMensaje();
-</script>
+        document.getElementById("mensaje").innerText = mensaje;
+    </script>
 
 </body>
 </html>
