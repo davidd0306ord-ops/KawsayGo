@@ -1,90 +1,204 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KawsayGo - Tu Progreso</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f7ff;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .card {
-            max-width: 450px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-
-        .progress-container {
-            width: 100%;
-            background: #e1e1e1;
-            border-radius: 20px;
-            margin-top: 20px;
-            height: 25px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 25px;
-            width: 0;
-            background: #00b36b;
-            transition: width 1.5s ease;
-        }
-
-        .mensaje {
-            margin-top: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .boton {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 25px;
-            background: #00b36b;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 18px;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>KawsayGo — Contador conectado</title>
+<style>
+  :root{--bg:#f2f7ff;--card:#fff;--accent:#00b36b;--muted:#6b7280}
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);margin:0;color:#111}
+  .wrap{max-width:760px;margin:36px auto;padding:18px}
+  .card{background:var(--card);padding:24px;border-radius:12px;box-shadow:0 8px 30px rgba(3,10,25,0.08)}
+  h1{margin:0 0 8px;font-size:1.6rem;color:var(--accent)}
+  p.lead{margin:0 0 16px;color:var(--muted)}
+  .bigcount{font-size:4.2rem;font-weight:700;margin:12px 0;color:#0b3f2f}
+  .progress-wrap{background:#e7eef0;border-radius:16px;padding:10px}
+  .progress-bar{height:20px;background:linear-gradient(90deg,var(--accent),#66d69a);width:0;border-radius:12px;transition:width 1200ms ease}
+  .controls{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  button{padding:10px 14px;border-radius:10px;border:0;font-weight:600;cursor:pointer}
+  .btn-add{background:#a8e6c8;color:#064b36}
+  .btn-reset{background:#ffd5d5;color:#6b0b0b}
+  .hint{margin-top:14px;color:#374151}
+  .diag{margin-top:16px;background:#f8fafb;padding:12px;border-radius:10px;color:#111}
+  .small{font-size:0.9rem;color:var(--muted)}
+  .footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.9rem}
+  @media(max-width:640px){.bigcount{font-size:3rem}}
+</style>
 </head>
 <body>
-
+  <div class="wrap">
     <div class="card">
-        <h2>Calculando tu progreso...</h2>
+      <h1>Tu progreso — KawsayGo</h1>
+      <p class="lead">Aquí verás un porcentaje estimado de tu estado actual basado en tu diagnóstico. Usa esto como un punto de partida para el plan diario.</p>
 
-        <div class="progress-container">
-            <div class="progress-bar" id="barra"></div>
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div class="small">Racha actual</div>
+            <div class="bigcount" id="diasDisplay">0</div>
+            <div class="small">días sin recaída</div>
+          </div>
+          <div style="flex:1;margin-left:12px">
+            <div class="small">Progreso estimado</div>
+            <div class="progress-wrap" aria-hidden="true" style="margin-top:8px">
+              <div id="barra" class="progress-bar" style="width:0%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px">
+              <div class="small">0%</div>
+              <div class="small" id="pctLabel">--%</div>
+              <div class="small">100%</div>
+            </div>
+          </div>
         </div>
 
-        <p class="mensaje" id="mensaje">Analizando tu energía y enfoque...</p>
+        <div class="controls">
+          <button class="btn-add" onclick="sumarDia()">✔ Marcar día completado</button>
+          <button class="btn-reset" onclick="confirmarReinicio()">🔁 Recaí — reiniciar</button>
+        </div>
 
-        <a href="inicio.html" class="boton">Continuar</a>
+        <div class="hint">
+          <strong>Consejo:</strong> Si no realizaste el diagnóstico, ve a <a href="diagnostico.html">Diagnóstico</a> para obtener una recomendación personalizada.
+        </div>
+
+        <div class="diag" id="diagBox">
+          <div class="small">Cargando diagnóstico...</div>
+        </div>
+
+        <div style="margin-top:14px" id="mensajeBox"></div>
+
+      </div>
     </div>
 
-    <script>
-        // Por ahora es un avance fijo. Luego lo conectaremos con el diagnóstico.
-        let progreso = 72; // Cambiará según las respuestas del usuario
+    <div class="footer">KawsayGo — Tu energía, tu dirección. Guardado localmente en tu navegador.</div>
+  </div>
 
-        document.getElementById("barra").style.width = progreso + "%";
+<script>
+// ---------- UTILIDADES ----------
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
-        // Mensaje según valor
-        let mensaje = "";
-        if (progreso < 40) mensaje = "Necesitas un reinicio urgente. 💛";
-        else if (progreso < 70) mensaje = "Tienes buena base, sigamos mejorando. ⚡";
-        else mensaje = "Estás muy cerca de tu mejor versión. 🔥";
+// ---------- CARGA / GUARDADO DE DIAGNÓSTICO ----------
+function leerDiagnostico(){
+  try{
+    const raw = localStorage.getItem('diagnosticoKawsayGo');
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
 
-        document.getElementById("mensaje").innerText = mensaje;
-    </script>
+// ---------- CARGA / GUARDADO CONTADOR ----------
+function leerDias(){
+  return parseInt(localStorage.getItem('contadorKawsayGo') || '0', 10);
+}
+function guardarDias(n){
+  localStorage.setItem('contadorKawsayGo', String(n));
+}
 
+// ---------- LÓGICA DE CÁLCULO DEL PROGRESO ----------
+function scoreFromDiagnostico(diag){
+  // valores base por frecuencia
+  const freq_map = {
+    'diario': 0,
+    'semanal': 20,
+    'quincenal': 40,
+    'mensual': 60,
+    'mas': 80
+  };
+  const causa_adj_map = {
+    'contenido': -10,
+    'estres': -8,
+    'soledad': -6,
+    'aburrimiento': -4,
+    'tristeza': -6,
+    'habito': -2
+  };
+  const hora_adj_map = {'manana': 5, 'tarde':2, 'noche':-5, 'madrugada':-8};
+
+  let base = freq_map[diag.frecuencia] ?? 20;
+  const impulso = parseInt(diag.impulso || '3', 10);
+  let impulse_penalty = impulso * 15; // 1->15, 5->75
+
+  let causa_adj = causa_adj_map[diag.causa] ?? 0;
+  let hora_adj = hora_adj_map[diag.hora] ?? 0;
+
+  // fórmula
+  let raw = base - (impulse_penalty * 0.5) + causa_adj + hora_adj;
+  // centramos y normalizamos a 0..100 (experimental)
+  let porcentaje = (raw + 100) / 2;
+  porcentaje = Math.round(clamp(porcentaje, 0, 100));
+  return porcentaje;
+}
+
+// ---------- RENDER / UI ----------
+function actualizarUI(){
+  // dias
+  const dias = leerDias();
+  document.getElementById('diasDisplay').textContent = dias;
+
+  // diagnostico
+  const diag = leerDiagnostico();
+  const diagBox = document.getElementById('diagBox');
+  if(!diag){
+    diagBox.innerHTML = '<div class="small">No hay diagnóstico guardado. <a href="diagnostico.html">Realizar diagnóstico</a></div>';
+    // fallback: progreso neutral
+    setProgreso(48, 'Sin diagnóstico, usamos valor neutro. Haz el diagnóstico para una recomendación precisa.');
+    return;
+  }
+
+  // mostrar resumen
+  diagBox.innerHTML = `<div class="small">Resumen: frecuencia: <strong>${diag.frecuencia}</strong> — impulso: <strong>${diag.impulso}</strong> — causa: <strong>${diag.causa}</strong> — hora crítica: <strong>${diag.hora}</strong></div>`;
+
+  // calcular porcentaje real
+  const pct = scoreFromDiagnostico(diag);
+  // si tienes racha muy alta, mejoramos un poco el pct (refuerza hábito)
+  const bonusRacha = Math.min(10, Math.floor(dias / 7) * 2); // +2% por cada semana completada, hasta 10
+  const pctFinal = clamp(pct + bonusRacha, 0, 100);
+
+  setProgreso(pctFinal, generarMensaje(pctFinal, diag, dias));
+}
+
+function setProgreso(pct, mensaje){
+  document.getElementById('barra').style.width = pct + '%';
+  document.getElementById('pctLabel').textContent = pct + '%';
+  document.getElementById('mensajeBox').innerHTML = `<div class="small" style="margin-top:12px">${mensaje}</div>`;
+}
+
+// Mensaje motivacional y recomendaciones personalizadas
+function generarMensaje(pct, diag, dias){
+  let m = "";
+  if(pct < 30) m = "Tu situación requiere atención: prioriza sueño, corta acceso a estímulos y pide ayuda si es necesario.";
+  else if(pct < 55) m = "Buen comienzo: trabaja en rutinas (sueño, ejercicio, evitar pantallas por la noche).";
+  else if(pct < 80) m = "Vas por buen camino: fortalece hábitos, añade ejercicio y tiempo con personas que te apoyen.";
+  else m = "Excelente progreso: mantén tu racha, ayuda a otros y establece metas a 30/60 días.";
+
+  // recomendaciones según causas
+  if(diag.causa === 'contenido') m += " Evita navegadores en incógnito y apps gatillo (usa bloqueadores).";
+  if(diag.causa === 'estres') m += " Incorpora respiraciones cortas y micro-descansos de 3 minutos.";
+  if(diag.causa === 'soledad') m += " Intenta conectar 2 veces a la semana con alguien (llamada o salir).";
+  if(diag.hora === 'madrugada') m += " Procura cargar el celular fuera del cuarto y mejorar higiene de sueño.";
+
+  // si dias es 0
+  if(dias === 0) m = "Aún no inicias tu contador. Marca tu primer día cuando estés listo.";
+
+  return m;
+}
+
+// ---------- INTERACCIÓN ----------
+function sumarDia(){
+  let dias = leerDias();
+  dias++;
+  guardarDias(dias);
+  actualizarUI();
+}
+
+function confirmarReinicio(){
+  if(confirm("Si reinicias, perderás tu racha. ¿Confirmar reinicio?")){
+    guardarDias(0);
+    actualizarUI();
+  }
+}
+
+// Inicializa
+actualizarUI();
+</script>
 </body>
 </html>
