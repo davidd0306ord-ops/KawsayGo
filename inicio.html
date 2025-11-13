@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KawsayGo - Tu Inicio</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #087f23);
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1em;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 5px;
+        }
+
+        button {
+            width: 100%;
+            background: #ffffff;
+            border: none;
+            padding: 14px;
+            margin-top: 10px;
+            border-radius: 10px;
+            color: #087f23;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #d8ffd8;
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bienvenido a tu proceso de transformación</h1>
+        <p>Estás dando el primer paso para recuperar tu energía, enfoque y disciplina.</p>
+    </header>
+
+    <div class="container">
+        <div class="section-title">🔎 Diagnóstico inicial</div>
+        <p>Antes de comenzar, necesitamos conocer tu situación actual.</p>
+
+        <a href="diagnostico.html">
+            <button>Realizar diagnóstico</button>
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="section-title">🧑‍💻 Crear tu cuenta</div>
+        <p>Crea tu perfil para guardar tu progreso y acceder a todas las funciones.</p>
+
+        <a href="registro.html">
+            <button>Crear cuenta</button>
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="section-title">⏱️ Tu contador de días</div>
+        <p>Cuando completes el diagnóstico, tu contador aparecerá aquí.</p>
+
+        <button disabled style="opacity: 0.5;">Contador bloqueado</button>
+    </div>
+
+</body>
+</html>
