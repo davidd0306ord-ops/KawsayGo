@@ -1,155 +1,31 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnóstico - KawsayGo</title>
+<h2>Diagnóstico Inicial</h2>
+<p>Antes de comenzar tu proceso, responde estas preguntas rápidas para evaluar tu energía, enfoque y bienestar.</p>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #087f23, #2e7d32);
-            margin: 0;
-            padding: 0;
-            color: #fff;
-        }
+<form>
+    <label>1. ¿Cómo está tu energía hoy?</label><br>
+    <input type="radio" name="energia"> Baja<br>
+    <input type="radio" name="energia"> Media<br>
+    <input type="radio" name="energia"> Alta<br><br>
 
-        header {
-            text-align: center;
-            padding: 30px 15px;
-        }
+    <label>2. ¿Qué tan estresado te sientes esta semana?</label><br>
+    <input type="radio" name="estres"> Nada<br>
+    <input type="radio" name="estres"> Moderado<br>
+    <input type="radio" name="estres"> Mucho<br><br>
 
-        h1 {
-            font-size: 2em;
-            margin-bottom: 5px;
-        }
+    <label>3. ¿Qué tan fácil te resulta concentrarte?</label><br>
+    <input type="radio" name="concentracion"> Difícil<br>
+    <input type="radio" name="concentracion"> Normal<br>
+    <input type="radio" name="concentracion"> Muy fácil<br><br>
 
-        .container {
-            background: rgba(255, 255, 255, 0.15);
-            width: 92%;
-            max-width: 700px;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(5px);
-        }
+    <label>4. ¿Cuántas horas duermes por noche?</label><br>
+    <input type="radio" name="sueno"> Menos de 5 horas<br>
+    <input type="radio" name="sueno"> Entre 6 y 7 horas<br>
+    <input type="radio" name="sueno"> Más de 8 horas<br><br>
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
+    <label>5. ¿Tienes claridad sobre tus metas actuales?</label><br>
+    <input type="radio" name="metas"> No<br>
+    <input type="radio" name="metas"> Más o menos<br>
+    <input type="radio" name="metas"> Sí, totalmente<br><br>
 
-        select, input {
-            width: 100%;
-            padding: 12px;
-            margin-top: 5px;
-            border: none;
-            border-radius: 10px;
-        }
-
-        button {
-            width: 100%;
-            background: #ffffff;
-            border: none;
-            padding: 14px;
-            margin-top: 20px;
-            border-radius: 10px;
-            color: #087f23;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #d0ffd6;
-            transform: scale(1.03);
-        }
-    </style>
-</head>
-
-<body>
-
-<header>
-    <h1>Diagnóstico Inicial</h1>
-    <p>Responde con sinceridad para ayudarte correctamente.</p>
-</header>
-
-<div class="container">
-
-    <label>¿Cada cuánto recaes en tu adicción?</label>
-    <select id="frecuencia">
-        <option value="">Seleccionar...</option>
-        <option value="diario">Diario</option>
-        <option value="semanal">Semanal</option>
-        <option value="quincenal">Cada 15 días</option>
-        <option value="mensual">Mensual</option>
-        <option value="mas">Más de 1 mes</option>
-    </select>
-
-    <label>¿Qué tan fuerte es tu impulso (1 = bajo, 5 = muy fuerte)?</label>
-    <select id="impulso">
-        <option value="">Seleccionar...</option>
-        <option value="1">1 (bajo)</option>
-        <option value="2">2</option>
-        <option value="3">3 (medio)</option>
-        <option value="4">4</option>
-        <option value="5">5 (muy fuerte)</option>
-    </select>
-
-    <label>¿Cuál es la causa más frecuente de tus recaídas?</label>
-    <select id="causa">
-        <option value="">Seleccionar...</option>
-        <option value="estres">Estrés</option>
-        <option value="soledad">Soledad</option>
-        <option value="aburrimiento">Aburrimiento</option>
-        <option value="tristeza">Tristeza</option>
-        <option value="contenido">Ver contenido sexual</option>
-        <option value="habito">Puro hábito</option>
-    </select>
-
-    <label>¿A qué hora recaes más seguido?</label>
-    <select id="hora">
-        <option value="">Seleccionar...</option>
-        <option value="manana">Mañana</option>
-        <option value="tarde">Tarde</option>
-        <option value="noche">Noche</option>
-        <option value="madrugada">Madrugada</option>
-    </select>
-
-    <button onclick="guardarDiagnostico()">Guardar y continuar</button>
-</div>
-
-
-<script>
-function guardarDiagnostico() {
-
-    const frecuencia = document.getElementById("frecuencia").value;
-    const impulso = document.getElementById("impulso").value;
-    const causa = document.getElementById("causa").value;
-    const hora = document.getElementById("hora").value;
-
-    if (!frecuencia || !impulso || !causa || !hora) {
-        alert("Por favor completa todas las preguntas.");
-        return;
-    }
-
-    // Guardamos los datos localmente
-    const data = {
-        frecuencia,
-        impulso,
-        causa,
-        hora
-    };
-
-    localStorage.setItem("diagnosticoKawsayGo", JSON.stringify(data));
-
-    // Ir al contador
-    window.location.href = "contador.html";
-}
-</script>
-
-</body>
-</html>
+    <a href="contador.html" class="boton">Ver mi resultado</a>
+</form>
