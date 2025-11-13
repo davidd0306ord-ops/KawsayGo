@@ -1,103 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KawsayGo — Prototipo</title>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#9aa4b2;--glass:rgba(255,255,255,0.04)}
-    *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{margin:0;background:linear-gradient(180deg,#071126 0%,#021018 100%);color:#e6eef3;min-height:100vh}
-    .wrap{max-width:980px;margin:36px auto;padding:20px}
-    header{display:flex;align-items:center;gap:16px}
-    .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700}
-    h1{margin:0;font-size:20px}
-    p.lead{color:var(--muted);margin:6px 0 18px}
-    .grid{display:grid;grid-template-columns:1fr 340px;gap:18px}
-    .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);}
-    .checkin{display:flex;flex-direction:column;gap:12px}
-    .mood{display:flex;gap:8px}
-    button.btn{background:var(--accent);border:none;color:#00151a;padding:10px 12px;border-radius:8px;font-weight:600;cursor:pointer}
-    .small{font-size:13px;color:var(--muted)}
-    .progress{height:12px;background:var(--glass);border-radius:10px;overflow:hidden}
-    .bar{height:100%;background:linear-gradient(90deg,#06b6d4,#7c3aed);width:45%}
-    .community{display:flex;flex-direction:column;gap:8px}
-    .post{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
-    footer{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
-    @media(max-width:880px){.grid{grid-template-columns:1fr}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KawsayGo - Recupera tu energía</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #fff;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            background: #00c278;
+            color: #111;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .button:hover {
+            background: #00e68a;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">KG</div>
-      <div>
-        <h1>KawsayGo — Prototipo web</h1>
-        <p class="lead">Mini-prototipo para validar interacción: check-in diario, Progreso y comunidad segura.</p>
-      </div>
-    </header>
+    <h1>Bienvenido a KawsayGo</h1>
+    <h2>Da el primer paso para recuperar tu energía, tu enfoque y tu vida.</h2>
 
-    <main class="grid" style="margin-top:18px">
-      <section class="card">
-        <h3>Check-in diario</h3>
-        <p class="small">Registra cómo te sientes y recibe una micro-tarea para hoy.</p>
-        <div class="checkin">
-          <label class="small">Estado (elige uno)</label>
-          <div class="mood">
-            <button class="btn" onclick="setMood('Calm')">Calm</button>
-            <button class="btn" onclick="setMood('Energizado')">Energizado</button>
-            <button class="btn" onclick="setMood('Cansado')">Cansado</button>
-            <button class="btn" onclick="setMood('Tentado')">Tentado</button>
-          </div>
-
-          <label class="small">Breve nota (opcional)</label>
-          <textarea id="note" rows="3" style="resize:none;border-radius:8px;padding:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:inherit"></textarea>
-
-          <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
-            <div>
-              <div class="small">Racha actual</div>
-              <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
-                <div style="font-weight:700">10 días</div>
-                <div class="small">sin recaída</div>
-              </div>
-            </div>
-            <button class="btn" onclick="saveCheckin()">Guardar check-in</button>
-          </div>
-
-          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:8px 0">
-
-          <div>
-            <div class="small">Progreso de energía</div>
-            <div class="progress" style="margin-top:6px"><div class="bar" id="bar"></div></div>
-            <div class="small" style="margin-top:6px">45% recuperado</div>
-          </div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <h4>Comunidad — KawsayGo Tribe</h4>
-        <p class="small">Comparte en anonimato mensajes de apoyo. Moderación necesaria más adelante.</p>
-        <div class="community" id="feed">
-          <div class="post"><strong>UsuarioA</strong><div class="small">Hoy 07:12</div><div>Logré 3 días, gracias por sus mensajes ❤️</div></div>
-          <div class="post"><strong>UsuarioB</strong><div class="small">Hoy 06:50</div><div>Usé la respiración 5-5-5 antes de caer. Funcionó.</div></div>
-        </div>
-
-        <div style="margin-top:12px">
-          <button class="btn" onclick="openSOS()">SOS — Necesito ayuda</button>
-          <div class="small" style="margin-top:10px">Recurso rápido: si estás en crisis, contacta a línea local de apoyo.</div>
-        </div>
-      </aside>
-    </main>
-
-    <footer class="card" style="margin-top:18px">KawsayGo — Prototipo. Objetivo: validar interacción mínima. (Diseño inicial)</footer>
-  </div>
-
-  <script>
-    function setMood(m){localStorage.setItem('k_mood',m);alert('Estado: '+m)}
-    function saveCheckin(){const m=localStorage.getItem('k_mood')||'No establecido';const n=document.getElementById('note').value;console.log('Guardar:',m,n);alert('Check-in guardado. ¡Buen trabajo!');}
-    function openSOS(){alert('Modo SOS: Respira 10 veces. Si estás en peligro, busca ayuda local o llama a emergencias.');}
-    // mock progress bar
-    document.getElementById('bar').style.width='45%';
-  </script>
+    <a href="#" class="button">Iniciar mi proceso</a>
 </body>
 </html>
